@@ -18,10 +18,10 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-config.set_main_option(
-    "sqlalchemy.url",
-    settings.DATABASE_URL.replace("postgresql+asyncpg", "postgresql+psycopg2")
-)
+import os
+database_url = os.environ.get("DATABASE_URL", settings.DATABASE_URL)
+database_url = database_url.replace("postgresql+asyncpg", "postgresql+psycopg2").replace("postgres://", "postgresql://")
+config.set_main_option("sqlalchemy.url", database_url)
 
 target_metadata = Base.metadata
 
